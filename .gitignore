@@ -1,0 +1,21 @@
+# Build
+target/
+
+# Lokale Daten (Alben/Fotos/Metadaten) - niemals committen
+/data/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs / Sonstiges
+*.log
