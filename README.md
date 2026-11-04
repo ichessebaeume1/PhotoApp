@@ -23,7 +23,7 @@ cd PhotoApp
 | Bauen | `./mvnw clean compile` | `.\mvnw.cmd clean compile` |
 | Tests + Coverage | `./mvnw clean test` | `.\mvnw.cmd clean test` |
 | Voller Build wie CI | `./mvnw clean verify` | `.\mvnw.cmd clean verify` |
-| Anwendung starten | `./mvnw exec:java` | `.\mvnw.cmd exec:java` |
+| Anwendung starten | `./mvnw compile exec:java` | `.\mvnw.cmd compile exec:java` |
 
 Erwartet: `BUILD SUCCESS`.
 Coverage-Report: `target/site/jacoco/index.html` im Browser öffnen.
