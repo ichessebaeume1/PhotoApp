@@ -4,7 +4,8 @@ Diese Regeln gelten f?r jede KI, die in diesem Repository Code oder Doku ?ndert.
 Die Verantwortung f?r das Ergebnis liegt beim Team.
 
 ## Projekt?berblick
-Java 21, Maven Wrapper, JUnit 5, JaCoCo, lokale Dateisystem-Persistenz, Swing-UI.
+Java 21, Maven Wrapper, JUnit 5 und JaCoCo. Der aktuelle Code enthält nur eine Swing-Platzhalter-UI; Fotoverwaltung und Persistenz sind noch nicht implementiert.
+Ziel: lokale Dateisystem-Persistenz mit optionaler, von Nutzer:innen gewählter Cloud-Synchronisierung.
 Schichten: `domain` -> (keine Abh?ngigkeit), `application` -> `domain`,
 `infrastructure` -> `application`/`domain`, `ui` -> `application`.
 (Verbindlich erst nach `ARCHITECTURE.md`, Block 3.)
