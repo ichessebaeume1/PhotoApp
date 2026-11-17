@@ -9,7 +9,7 @@ Fokus: nachvollziehbare Spezifikation, Architektur, Tests und kontrollierte Weit
 - **Git**
 - **Java 21 JDK** (z. B. Eclipse Temurin). `JAVA_HOME` gesetzt, `java -version` zeigt 21.
 - **Keine** globale Maven-Installation n?tig (Maven Wrapper ist enthalten).
-- Keine Datenbank, keine Cloud: Daten liegen lokal im Dateisystem.
+- Keine Datenbank. Ziel ist lokale Speicherung mit optionaler Cloud-Synchronisierung nach ausdrücklicher Nutzerwahl; Cloud und Fotoverwaltung sind noch nicht implementiert.
 
 ## Schnellstart
 
@@ -48,9 +48,20 @@ IDE: Projekt als **Maven-Projekt** ?ffnen (IntelliJ: `pom.xml` -> ?Open as Proje
 
 ## Datenhaltung
 
-Alben und Fotos werden lokal im Ordner `data/` gespeichert. Der Ordner ist per
-`.gitignore` ausgeschlossen und wird von der Anwendung bei Bedarf angelegt.
-Das konkrete Dateiformat wird in `ARCHITECTURE.md` dokumentiert (Block 3).
+**Ziel:** Originalfotos und Metadaten werden lokal gespeichert. Nutzer:innen können
+zusätzlich eine Cloud-Synchronisierung wählen; das Kontingent beträgt laut Anforderungen
+500 GB je Nutzerkonto. Die konkrete Speicherung ist noch nicht implementiert.
+
+## Produktumfang und Implementierungsstand
+
+Die Anforderungen verwenden **Core** für Album und **Memory** für Foto. Das Java-Projekt
+enthält derzeit nur das Gerüst mit einer Swing-Platzhalteroberfläche. Import, Speicherung,
+Papierkorb und Cloud-Synchronisierung sind Zielanforderungen, keine vorhandenen Funktionen.
+
+Die Anforderungen sehen außerdem lokale Kernfunktionen auf iOS, iPadOS, macOS, Windows,
+Android und Linux vor. Die vorhandene Swing-Oberfläche deckt diese Plattformanforderung
+nicht ab; die technische Lösung ist noch offen. Einzelheiten und offene Punkte stehen in
+[`REQUIREMENTS.md`](REQUIREMENTS.md) und [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Projektstruktur
 
