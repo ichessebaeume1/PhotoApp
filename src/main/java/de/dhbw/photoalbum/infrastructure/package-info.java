@@ -1,5 +1,2 @@
-/**
- * Infrastrukturschicht: Dateisystem-Anbindung, Implementierung der Ports.
- * Vorl?ufige Regel: darf von application und domain abh?ngen.
- */
+/** Ziel: Datei-, Hash- und Persistenzadapter für Anwendungsports. Implementierung in Block 4. */
 package de.dhbw.photoalbum.infrastructure;

@@ -9,3 +9,9 @@
 
 ### Changed
 - TODO: sp?tere fachliche ?nderungen dokumentieren.
+
+## Block-3-Entwurf
+
+- Architektur, ADRs, CRC und PlantUML mit Fehlerpfaden ergänzt.
+- Album/Photo-Grundlagen mit 10.000-Limit und Duplikatprüfung ergänzt.
+- Offene Anforderungen und noch ausstehendes Teamreview dokumentiert.

@@ -14,7 +14,7 @@ Fokus: nachvollziehbare Spezifikation, Architektur, Tests und kontrollierte Weit
 ## Schnellstart
 
 ```bash
-git https://github.com/ichessebaeume1/PhotoApp.git
+git clone https://github.com/ichessebaeume1/PhotoApp.git
 cd PhotoApp
 ```
 
@@ -86,3 +86,9 @@ Weitere Dokumente: [REQUIREMENTS](REQUIREMENTS.md) ? [ARCHITECTURE](ARCHITECTURE
 ## Versionen
 
 Java 21 ? Maven 3.9.9 (Wrapper) ? JUnit 5.11.4 ? JaCoCo 0.8.12 ? Swing (JDK)
+
+## Block 3
+
+[Architektur und Diagramme](ARCHITECTURE.md) · [Stand und nächste Schritte](docs/BLOCK3_STATUS.md).
+Der Code enthält weiterhin die Swing-Platzhalter-UI plus erste Domäneninvarianten.
+Use Cases, Dateiadapter und optionale KI sind Zielentwurf für spätere Implementierung.

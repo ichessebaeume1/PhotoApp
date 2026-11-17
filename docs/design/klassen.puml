@@ -1,0 +1,145 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam ArrowColor #34536B
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #34536B
+title PhotoApp – Klassen, Ports und Adapter (Zielentwurf, nicht Implementierungsstand)
+left to right direction
+hide empty members
+package "domain" {
+class Album {
+ - id : UUID
+ - name : String
+ - version : long
+ - deletedAt : Instant [0..1]
+ - photosByHash : Map
+ + Album(id, name)
+ + rename(name)
+ + checkCanAdd(hash)
+ + addPhoto(photo)
+ + removePhoto(photoId)
+ + sort(order)
+ + markAsDeleted(at)
+ + restore()
+ + photoCount() : int
+}
+class Photo {
+ - id : UUID
+ - hash : String
+ - storageRef : String
+ - capturedAt : Instant
+ - title : String
+ - description : String
+ + Photo(id, hash, storageRef, capturedAt)
+ + editMetadata(title, description)
+}
+class ImportPolicy {
+ + maxFileBytes : long
+ + allowedFormats : Set
+}
+Album "1" *-- "0..10000" Photo
+}
+package "application" {
+class AddPhotoUseCase {
+ + addPhoto(albumId, source) : Photo
+}
+class DeleteAlbumUseCase {
+ + requestDeletion(albumId) : AlbumSummary
+ + confirmDeletion(albumId, expectedVersion)
+}
+class AlbumSummary <<DTO>> {
+ + id : UUID
+ + name : String
+ + photoCount : int
+ + version : long
+}
+class StagedImage <<DTO>> {
+ + token : UUID
+}
+class StoredPhoto <<DTO>> {
+ + id : UUID
+ + storageRef : String
+ + capturedAt : Instant
+ + toPhoto(hash) : Photo
+}
+interface AlbumRepository <<port>> {
+ + findById(albumId) : Album
+ + findAll() : List<AlbumSummary>
+ + save(album)
+}
+interface PhotoStorage <<port>> {
+ + stage(source) : StagedImage
+ + store(staged) : StoredPhoto
+ + discardStage(staged)
+ + removeStored(stored)
+ + moveToTrash(albumId)
+ + loadPage(albumId, offset, limit) : PhotoPage
+}
+interface ImageFileValidator <<port>> {
+ + validate(staged, policy)
+}
+interface ImageHasher <<port>> {
+ + sha256(staged) : String
+}
+interface DescriptionSuggester <<port, Won't>> {
+ + suggest(request) : Suggestion
+}
+AddPhotoUseCase --> Album
+AddPhotoUseCase --> AlbumRepository
+AddPhotoUseCase --> PhotoStorage
+AddPhotoUseCase --> ImageFileValidator
+AddPhotoUseCase --> ImageHasher
+AddPhotoUseCase --> ImportPolicy
+DeleteAlbumUseCase --> AlbumRepository
+DeleteAlbumUseCase --> PhotoStorage
+DeleteAlbumUseCase --> Album
+AlbumRepository ..> AlbumSummary
+PhotoStorage ..> StagedImage
+PhotoStorage ..> StoredPhoto
+StoredPhoto ..> Photo
+}
+package "infrastructure" {
+class FileAlbumRepository
+class LocalPhotoStorage
+class FileImageFileValidator
+class Sha256ImageHasher
+class LlmDescriptionSuggester <<Won't>>
+FileAlbumRepository ..|> AlbumRepository
+LocalPhotoStorage ..|> PhotoStorage
+FileImageFileValidator ..|> ImageFileValidator
+Sha256ImageHasher ..|> ImageHasher
+LlmDescriptionSuggester ..|> DescriptionSuggester
+}
+package "ui" {
+class PhotoController {
+ + onAddPhoto(albumId, source)
+ + onRequestDeletion(albumId)
+ + onConfirmDeletion(albumId, expectedVersion)
+ + onCancelDeletion()
+ + showPhoto(photo)
+ + showError(message)
+ + showDeletionPreview(summary)
+ + showDeletionSuccess()
+ + showUnchangedAlbum()
+}
+PhotoController --> AddPhotoUseCase
+PhotoController --> DeleteAlbumUseCase
+}
+note bottom of Album
+Regeln: Name 1–50, nicht nur Leerzeichen;
+maximal 10.000 Fotos, Hash je Album eindeutig.
+AlbumSummary ist ein neutrales DTO in application;
+der Use Case liest photoCount() und mappt das DTO.
+Titel-/Beschreibungslängen bleiben offen.
+end note
+note bottom of PhotoStorage
+moveToTrash: kopieren, prüfen, Trash committen,
+erst danach Originale bereinigen (ADR-003).
+limit in loadPage: höchstens 100 Vorschauen.
+end note
+@enduml
