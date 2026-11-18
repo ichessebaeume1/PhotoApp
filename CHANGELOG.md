@@ -5,6 +5,8 @@
 ### Changed
 - Block-2-Anforderungen übernommen und als Soll-Verhalten von der aktuellen Implementierung abgegrenzt.
 - Architektur und README weisen Cloud-, Medien- und Plattformanforderungen sowie offene Entscheidungen aus.
+- Reviewer-Feedback eingearbeitet: lokale Java-21-Systemgrenze, messbare NFA, getrennte Entscheidungen/Annahmen, Dateiformate und KI-/Sicherheitsabschnitt.
+- CI-Build um Windows-, macOS- und Linux-Runner erweitert.
 
 ## [0.1.0-SNAPSHOT] - 2026-11-04
 
