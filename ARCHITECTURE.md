@@ -27,7 +27,7 @@ Vorgesehene Abhängigkeitsrichtung:
 
 Beim Import werden ausschließlich JPG, JPEG, PNG und SVG akzeptiert und lokal gespeichert; ein Foto darf höchstens 50 MB groß sein. MP4 und andere Videos bleiben bis zur Klärung von Codec und Größenlimit außerhalb des Umfangs. Der SHA-256-Hash der vollständigen Originaldatei dient der Duplikatprüfung innerhalb eines Cores. Ein Pflicht-Fototitel umfasst 1–100 Zeichen.
 
-Gelöschte Memories liegen 30 Tage im Papierkorb. Sie zählen nicht zur aktiven Fotoanzahl; für eine Wiederherstellung müssen Frist, Ziel-Core, Platz und Duplikatregeln erfüllt sein. Endgültiges Löschen betrifft appverwaltete lokale Daten.
+Gelöschte Memories liegen 30 Tage im Papierkorb. Sie zählen nicht zur aktiven Fotoanzahl; für eine Wiederherstellung müssen Frist, Ziel-Core, Platz und Duplikatregeln erfüllt sein. Die Bereinigung läuft beim Anwendungsstart und einmal täglich, sodass abgelaufene appverwaltete lokale Daten spätestens 24 Stunden nach Fristablauf entfernt werden.
 
 Cores werden standardmäßig nach Datum angezeigt; alphabetische und benutzerdefinierte Sortierung sind ebenfalls vorgesehen. Sortierrichtung und Nachladeblock sind in den Anforderungen als Annahmen festgelegt.
 

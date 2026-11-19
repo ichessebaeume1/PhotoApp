@@ -65,11 +65,11 @@ Durchgezogene Linien zeigen Schnittstellen im Betrieb, gestrichelte Linien organ
 | --- | --- |
 | GR-01 | Ein importiertes Foto darf höchstens **50 MB** groß sein. Es gibt kein festes lokales Speicherlimit je Core; die lokale Nutzung ist durch den verfügbaren Gerätespeicher begrenzt. |
 | GR-02 | Ein Core darf höchstens **10.000 aktive Fotos** enthalten. Papierkorbinhalte zählen nicht zur aktiven Anzahl. |
-| GR-03 | Ausschließlich **JPG, JPEG, PNG und SVG** werden als Fotoformate unterstützt. Originaldateien werden nicht zusätzlich komprimiert oder verändert. **MP4 und andere Videos sind bis zur Klärung von Codec und Größenlimit ausgeschlossen.** |
+| GR-03 | Für den aktuellen Umfang werden **JPG, JPEG, PNG und SVG** als Fotoformate verwendet. Diese Formatliste ist eine Teamannahme (A-09), noch nicht vom Auftraggeber bestätigt. Originaldateien werden nicht zusätzlich komprimiert oder verändert. **MP4 und andere Videos sind bis zur Klärung von Codec und Größenlimit ausgeschlossen.** |
 | GR-04 | Ein **Core-Name/Albumtitel ist Pflicht**, besitzt **1–50 Zeichen** nach Entfernen äußerer Leerzeichen und darf nicht nur aus Leerzeichen bestehen. Übliche Sonderzeichen und **Emojis sind erlaubt**. Ein bereits vorhandener Albumname wird automatisch durch eine angehängte „1“ unterschieden. |
 | GR-05 | Die **Core-/Albumbeschreibung ist optional, höchstens 500 Zeichen** lang und erlaubt wie der Albumtitel Sonderzeichen und Emojis. **Fototitel sind Pflicht und besitzen 1–100 Zeichen.** Die **optionale Memory-/Fotobeschreibung ist höchstens 500 Zeichen** lang. |
 | GR-06 | Inhaltsduplikate werden per **SHA-256 über die vollständigen Originaldateibytes** erkannt. Im selben Core wird ein erneuter Import mit gleichem Hash abgelehnt; dasselbe Foto ist in verschiedenen Cores erlaubt. Dateinamen entscheiden nicht über Duplikate. |
-| GR-07 | Gelöschte Memories liegen **30 Tage** in „Zuletzt gelöscht“. Sie sind vor Ablauf wiederherstellbar, **sofern die Bedingungen aus GR-08 erfüllt sind** und sie nicht manuell endgültig gelöscht wurden. Danach werden sie automatisch endgültig gelöscht. Vor einer Core-Löschung wird eine Bestätigung verlangt; bei enthaltenen Fotos nennt der Hinweis die Auswirkungen auf diese. |
+| GR-07 | Gelöschte Memories liegen **30 Tage** in „Zuletzt gelöscht“. Sie sind vor Ablauf wiederherstellbar, **sofern die Bedingungen aus GR-08 erfüllt sind** und sie nicht manuell endgültig gelöscht wurden. Danach werden sie durch den lokal geplanten Bereinigungslauf endgültig gelöscht (A-10). Vor einer Core-Löschung wird eine Bestätigung verlangt; bei enthaltenen Fotos nennt der Hinweis die Auswirkungen auf diese. |
 | GR-08 | Wiederherstellung setzt eine noch laufende Frist, einen aktiven Ziel-Core, Platz unter dem Mengenlimit und **kein aktives SHA-256-Duplikat** voraus. Papierkorbinhalte belegen weiterhin lokalen Speicher. |
 | GR-09 | Mehrfachimport ist möglich. In einen neuen leeren Core werden die ersten **10.000 zulässigen Fotos** übernommen, darüber hinaus ausgewählte Fotos nicht; ein Hinweis nennt den nicht übernommenen Teil. Erfolgreiche Importe bleiben bestehen. Es wird kein weiterer Core für den Überhang angelegt. |
 | GR-10 | Sämtliche Fotos und Metadaten werden ausschließlich **lokal** gespeichert. Cloud-Synchronisierung und geräteübergreifender Zugriff gehören nicht zum aktuellen Systemumfang. |
@@ -83,12 +83,12 @@ Durchgezogene Linien zeigen Schnittstellen im Betrieb, gestrichelte Linien organ
 | Systemgrenze | Lokale Desktop-Anwendung mit JavaFX, Swing oder Konsole. Cloud, Web, iOS und Android sind Vision außerhalb der aktuellen Muss-Anforderungen. |
 | Chat | Nicht Bestandteil des Projekts. |
 | Papierkorb | Gelöschte Inhalte bleiben 30 Tage wiederherstellbar; nur aktive Fotos zählen zum aktiven Core-Limit. |
-| Fotoformate | JPG, JPEG, PNG und SVG. MP4 wird erst nach Klärung von Codec und Größenlimit aufgenommen; bis dahin sind Videos ausgeschlossen. |
+| Fotoformate | Die Liste JPG, JPEG, PNG und SVG ist eine Teamannahme (A-09) und noch nicht vom Auftraggeber bestätigt. MP4 wird erst nach Klärung von Codec und Größenlimit aufgenommen; bis dahin sind Videos ausgeschlossen. |
 | Fototitel | Pflichtfeld mit 1–100 Zeichen. |
 | Duplikate | SHA-256 über die vollständigen Originaldateibytes; Duplikate werden innerhalb desselben Cores abgelehnt. Anzeige: „Dieses Bild existiert bereits in diesem Core und wurde nicht hinzugefügt.“ |
 | Wiederherstellung | Nur vor Fristablauf, bei aktivem Ziel-Core, freiem Platz und ohne aktives Inhaltsduplikat. Papierkorbinhalte belegen lokal weiterhin Speicher. |
 | Cloud-Kontingent | Die frühere 500-GB-Cloud-Entscheidung betrifft ausschließlich eine mögliche spätere Vision und ist keine Anforderung der aktuellen lokalen Anwendung. |
-| NFA-01 | Die ersten 100 Vorschaubilder werden in höchstens 2 Sekunden angezeigt; als reproduzierbare Referenz dient der Linux-CI-Job mit Java 21 (A-06). |
+| NFA-01 | Die ersten 100 bereits gespeicherten Vorschaubilder werden in höchstens 2 Sekunden angezeigt; als reproduzierbare Referenz dient der Linux-CI-Job mit Java 21 (A-06). |
 
 ## 5. Annahmen
 
@@ -97,9 +97,11 @@ Durchgezogene Linien zeigen Schnittstellen im Betrieb, gestrichelte Linien organ
 - **A-03 – Zeitberechnung für Löschung:** Die bestätigte Frist von 30 Tagen entspricht 30 × 24 Stunden ab lokal dauerhaft gespeichertem Löschzeitpunkt. Ein gelöschter Core und seine aktiven Memories liegen gemeinsam im Papierkorb. Bereits einzeln gelöschte Memories behalten ihre bisherige Frist. Core-Wiederherstellung aktiviert nur die mit ihm gelöschten, noch nicht abgelaufenen Memories, sofern alle Wiederherstellungsbedingungen erfüllt sind. Einzelne Memories eines gelöschten Cores benötigen zunächst dessen Wiederherstellung.
 - **A-04 – Fotobeschreibung:** Die optionale Fotobeschreibung ist auf 500 Zeichen begrenzt, bis der Auftraggeber den Grenzwert bestätigt.
 - **A-05 – Sortierung:** Standardmäßig erscheinen die neuesten Core-/Fotoeinträge zuerst. Alphabetische Sortierung ist aufsteigend nach dem angezeigten Core-Namen beziehungsweise Fototitel. Weitere Fotos werden in Blöcken zu 50 nachgeladen.
-- **A-06 – Performance-Test:** NFA-01 wird auf dem Linux-CI-Runner mit Java 21 geprüft. Der Test verwendet dieselben 100 lokalen Bilddateien in jedem Lauf und misst vom Öffnen des Cores bis zur Anzeige des 100. Vorschaubilds; Runner-Image und Messwert werden im CI-Lauf protokolliert.
+- **A-06 – Performance-Test:** NFA-01 wird auf dem Linux-CI-Runner mit Java 21 geprüft. Die 100 lokalen Bilddateien und ihre 100 Vorschaudateien liegen vor Beginn der Messung vollständig auf der Platte. Der Test misst ausschließlich vom Öffnen des Cores bis zur Anzeige des 100. bereits gespeicherten Vorschaubilds; Vorschauerzeugung ist nicht Teil der Zeitmessung. Dieselben Dateien werden in jedem Lauf verwendet; Runner-Image und Messwert werden im CI-Lauf protokolliert.
 - **A-07 – Endungen:** Die Endungen JPG/JPEG, PNG und SVG werden unabhängig von Groß-/Kleinschreibung akzeptiert. Andere Formate und unlesbare Dateien werden abgelehnt. Die Dateiendung allein gilt nicht als Nachweis, dass eine Datei lesbar ist.
 - **A-08 – Namenskollision:** Bei belegtem Namen wird die kleinste freie positive Zahl angehängt. Der Zusatz zählt zur 50-Zeichen-Grenze. Passt kein eindeutiger Zusatz in die Grenze, wird die Eingabe mit Hinweis abgelehnt und ein anderer Name verlangt.
+- **A-09 – Formatliste:** Die Unterstützung von JPG, JPEG, PNG und SVG ist eine Annahme des Teams. Eine ausdrückliche Bestätigung der Auftraggebergruppe liegt noch nicht vor. HEIC, GIF und RAW/CR2 gehören daher nicht zum bestätigten Abnahmescope.
+- **A-10 – Papierkorbereinigung:** Die Bereinigung läuft beim Start der Anwendung und anschließend einmal täglich, solange die Anwendung läuft. Abgelaufene Inhalte werden spätestens 24 Stunden nach Ablauf der 30-Tage-Frist endgültig gelöscht. Die maximale Verzögerung beträgt damit 24 Stunden.
 
 ## 6. Use Cases
 
@@ -206,7 +208,7 @@ Alle zehn Anforderungen sind **MUSS-Anforderungen**. Zugehörige Geschäftsregel
 
 | ID | Merkmal / Verbindlichkeit | Bedingung und Messgröße | Herkunft / Status |
 | --- | --- | --- | --- |
-| NFA-01 | Performance / muss | Auf dem lokalen Linux-CI-Runner mit Java 21 müssen die ersten 100 Vorschaubilder eines Cores innerhalb von **2 Sekunden** nach Öffnen des Cores angezeigt werden. Messaufbau gemäß A-06. | Interview 08:17–09:37; Zielwert als Auftraggeberentscheidung, Testumgebung als Annahme. |
+| NFA-01 | Performance / muss | Auf dem lokalen Linux-CI-Runner mit Java 21 müssen die ersten 100 bereits gespeicherten Vorschaubilder eines Cores innerhalb von **2 Sekunden** nach Öffnen des Cores angezeigt werden. Messaufbau gemäß A-06. | Interview 08:17–09:37; Zielwert als Auftraggeberentscheidung, Testumgebung und Vorschaudateien als Annahmen. |
 | NFA-02 | Verständlichkeit / muss | Jede Fehlermeldung muss den konkreten Fehlergrund nennen und höchstens **50 Wörter** umfassen. Wortlaut und Sprache sind noch abzustimmen; technische Testannahme: Wörter werden durch Leerraum getrennt gezählt. | Interview 07:01–07:29. „Jugendgerecht“ bleibt eine qualitative Gestaltungsrichtung; die zuvor erfundene 8-von-10-/60-Sekunden-Vorgabe entfällt. |
 | NFA-03 | Portabilität / muss | Die CI führt `mvnw clean verify` mit Java 21 auf `windows-latest`, `macos-latest` und `ubuntu-latest` aus. Alle drei CI-Jobs müssen erfolgreich sein; die lokalen Funktionen Core-Erstellung, Fotoimport und Wiederherstellung werden in jedem Job getestet. | Technischer Prüfungsrahmen und plattformübergreifende CI-Matrix; tatsächliche Runner-Image-Version wird protokolliert. |
 | NFA-04 | Datenintegrität / muss | Erfolgreich gespeicherte und wiederhergestellte Originale müssen in Dateilänge und vollständigem Bytevergleich zu 100 % mit ihrer Importquelle übereinstimmen; je freigegebenem Format lokal prüfen. Vorschaubilder dürfen abweichend erzeugt werden. | Ergänzende Teamvorgabe: keine Veränderung/zusätzliche Komprimierung der Originale. |
@@ -265,15 +267,15 @@ Alle zehn Anforderungen sind **MUSS-Anforderungen**. Zugehörige Geschäftsregel
 | AK-09.2 | Core an der Mengengrenze | Eine Memory wird entfernt | Aktive Anzahl sinkt um 1; Datei belegt im Papierkorb weiterhin physischen Speicher. |
 | AK-10.1 | Frist läuft noch; aktiver Ziel-Core; kein aktives Duplikat, alle Mengen-/Speicherbedingungen erfüllt | Wiederherstellung wird bestätigt | Memory mit Daten/Metadaten aktiv; aktive Anzahl und Belegung steigen entsprechend. |
 | AK-10.2 | Memory im Papierkorb | Nutzer:in bestätigt endgültige Löschung | Lokal appverwaltete Daten werden endgültig entfernt; keine Wiederherstellung. |
-| AK-10.3 | Löschfrist von 30 Tagen erreicht und Papierkorb wird geöffnet | System verarbeitet den Papierkorb | Memory ist endgültig gelöscht und kann nicht wiederhergestellt werden. |
+| AK-10.3 | Löschfrist von 30 Tagen erreicht | Anwendungsstart oder täglicher Bereinigungslauf wird ausgeführt | Memory wird spätestens 24 Stunden nach Fristablauf endgültig gelöscht und kann nicht wiederhergestellt werden (A-10). |
 | AK-10.4 | Core gelöscht, Frist läuft; alle Wiederherstellungsbedingungen erfüllt | Core wird wiederhergestellt | Core und mit ihm gelöschte, noch gültige Memories aktiv; früher einzeln gelöschte bleiben im Papierkorb. |
 | AK-10.5 | Frist läuft, kein Duplikat, Ziel-Core bereits mit 10.000 aktiven Fotos | Wiederherstellung einer Memory wird versucht | Voll-Hinweis; Memory, ursprüngliche Frist und Core bleiben unverändert. |
 | AK-10.6 | Frist läuft; aktiver Ziel-Core; **kein aktives Inhaltsduplikat**; Wiederherstellung ergibt genau 10.000 Fotos und alle übrigen Speicher-/Wiederherstellungsbedingungen sind erfüllt | Wiederherstellung wird bestätigt | Wiederherstellung gelingt. |
 | AK-10.7 | Frist läuft; gleiche SHA-256 bereits aktiv im Ziel-Core, auch wenn die Wiederherstellung genau eine Mengengrenze erreichen würde | Wiederherstellung wird versucht | Duplikathinweis; Memory bleibt mit unveränderter Frist im Papierkorb. |
 | AK-10.8 | Frist abgelaufen; Datei noch nicht physisch bereinigt | Wiederherstellung wird versucht | Ablehnung wegen Fristablauf, keine aktive Memory. |
 | AK-NFA-02.1 | Ein spezifizierter Fehlerfall wird ausgelöst | System zeigt die Fehlermeldung | Konkreter Grund genannt, höchstens 50 Wörter nach vereinbarter Zählweise. |
-| AK-NFA-01.1 | 100 lokal gespeicherte Vorschaubilder, Java 21, Linux-CI-Runner | Core wird geöffnet; Zeit bis zur Anzeige des 100. Vorschaubilds wird gemessen | Messwert maximal 2 Sekunden; Runner-Image und Messwert werden protokolliert (A-06). |
-| AK-NFA-03.1 | CI-Matrix mit Java 21 auf `ubuntu-latest`, `windows-latest` und `macos-latest` | `mvnw clean verify` wird in allen drei Jobs ausgeführt | Alle drei Jobs bestehen; Runner-Image und Java-Version werden protokolliert. |
+| AK-NFA-01.1 | 100 lokale Bilddateien und zugehörige Vorschaudateien liegen vor der Messung auf dem Datenträger; Java 21, Linux-CI-Runner | Core wird geöffnet; Zeit bis zur Anzeige des 100. bereits gespeicherten Vorschaubilds wird gemessen | Messwert maximal 2 Sekunden; Vorschauerzeugung liegt nicht in der Messzeit; Runner-Image und Messwert werden protokolliert (A-06). |
+| AK-NFA-03.1 | CI-Matrix mit Java 21 auf `ubuntu-latest`, `windows-latest` und `macos-latest`; Abnahmetests für Core-Erstellung, Fotoimport und Wiederherstellung sind vorhanden | `mvnw clean verify` wird in allen drei Jobs ausgeführt und durchläuft alle drei Szenarien | Alle drei Jobs und alle drei Abnahmeszenarien bestehen; Runner-Image und Java-Version werden protokolliert. |
 | AK-NFA-04.1 | Testoriginale für JPG, JPEG, PNG und SVG; alle Import-/Wiederherstellungsbedingungen erfüllt | Lokal speichern, entfernen und wiederherstellen | Alle erfolgreich gespeicherten Originalkopien stimmen in Dateilänge und Bytes mit den Testoriginalen überein. |
 
 NFA-01 und NFA-03 haben jeweils messbare Akzeptanzkriterien. Annahmen zu Messumgebung und Testdetails sind in Abschnitt „Annahmen“ gekennzeichnet.
@@ -281,12 +283,14 @@ NFA-01 und NFA-03 haben jeweils messbare Akzeptanzkriterien. Annahmen zu Messumg
 ## 10. Offene Entscheidungen und Review
 
 1. **O-01 – Texteingaben:** Auftraggeberbestätigung der als Annahme markierten 500-Zeichen-Grenze für Fotobeschreibungen sowie Bestätigung der Unicode-Zählweise.
-2. **O-02 – Vision und Backlog:** MP4-Codec und Videogröße vor Aufnahme von Videos; Regeln für gemeinsame Alben/Freigaben, Kontakte, Rechte, Altersangaben und geräteübergreifende Nutzung. Diese Punkte sind nicht Bestandteil aktueller Abnahmekriterien.
-3. **O-03 – Sicherheit:** Verschlüsselung, Anmeldung, Backups und sichere Löschung jenseits appverwalteter Dateien sind nicht festgelegt. Eine Entscheidung ist vor Implementierung entsprechender Funktionen erforderlich.
+2. **O-02 – Fotoformate:** Auftraggeberbestätigung der angenommenen Liste JPG, JPEG, PNG und SVG beziehungsweise Entscheidung über HEIC, GIF und RAW/CR2.
+3. **O-03 – Papierkorbereinigung:** Bestätigung oder Änderung von Anwendungsstart, täglichem Lauf und maximal 24 Stunden Verzögerung aus A-10.
+4. **O-04 – Vision und Backlog:** MP4-Codec und Videogröße vor Aufnahme von Videos; Regeln für gemeinsame Alben/Freigaben, Kontakte, Rechte, Altersangaben und geräteübergreifende Nutzung. Diese Punkte sind nicht Bestandteil aktueller Abnahmekriterien.
+5. **O-05 – Sicherheit:** Verschlüsselung, Anmeldung, Backups und sichere Löschung jenseits appverwalteter Dateien sind nicht festgelegt. Eine Entscheidung ist vor Implementierung entsprechender Funktionen erforderlich.
 
 **Review-Status:** Das Review von Steven Frolov (Team 5) wurde eingearbeitet. Cloud, Web und Mobile wurden nach Teamentscheidung aus dem aktuellen Muss-Umfang ausgegrenzt; Leistungsziel, Plattformmatrix, Dateitypen und Annahmen sind nun explizit dokumentiert.
 
-**Checkpoint:** Zehn funktionale Anforderungen und vier messbare nichtfunktionale Anforderungen sind den Akzeptanzkriterien zugeordnet. Die Fotoformate sind abschließend für den aktuellen Umfang festgelegt. Die verbleibenden Punkte betreffen Annahmen oder Vision, nicht bedingte Akzeptanzkriterien.
+**Checkpoint:** Zehn funktionale Anforderungen und vier messbare nichtfunktionale Anforderungen sind den Akzeptanzkriterien zugeordnet. Die NFA-03-Abnahmematrix enthält ausdrücklich Core-Erstellung, Fotoimport und Wiederherstellung. Die Formatliste, Löschbereinigung und Performance-Messumgebung sind als Annahmen dokumentiert; verbleibende offene Punkte betreffen Annahmen oder Vision, nicht unbestimmte Abnahmekriterien.
 
 ## 11. KI und Sicherheit
 

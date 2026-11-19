@@ -11,4 +11,4 @@ Dokumentation der KI-gest?tzten Arbeit im Projekt.
 - Die Benutzung von KI ist mit dem Projektkontext und den Teamregeln konsistent zu halten.
 
 ## Eintr?ge
-- TODO: KI-Nutzung f?r den Initial-Setup eintragen.
+- 2026-11-19: Copilot Coding Agent hat das Block-2-Review-Feedback in Anforderungen, Architektur und Testkonzept eingearbeitet.
