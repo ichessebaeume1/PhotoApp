@@ -11,8 +11,12 @@ permissions:
 
 jobs:
   build:
-    name: build
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }} / Java 21
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
 
@@ -23,13 +27,19 @@ jobs:
           cache: maven
 
       - name: Make wrapper executable
+        if: runner.os != 'Windows'
         run: chmod +x mvnw
 
-      - name: Build and test
+      - name: Build and test (Unix)
+        if: runner.os != 'Windows'
         run: ./mvnw -B -ntp clean verify
 
+      - name: Build and test (Windows)
+        if: runner.os == 'Windows'
+        run: .\mvnw.cmd -B -ntp clean verify
+
       - name: Upload coverage report
-        if: always()
+        if: always() && runner.os == 'Linux'
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report

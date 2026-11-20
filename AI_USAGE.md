@@ -11,4 +11,4 @@ Dokumentation der KI-gest?tzten Arbeit im Projekt.
 - Die Benutzung von KI ist mit dem Projektkontext und den Teamregeln konsistent zu halten.
 
 ## Eintr?ge
-- TODO: KI-Nutzung f?r den Initial-Setup eintragen.
+- TODO: Einträge für KI nutzung ergänzen

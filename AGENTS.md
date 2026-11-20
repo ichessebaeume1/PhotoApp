@@ -5,7 +5,7 @@ Die Verantwortung f?r das Ergebnis liegt beim Team.
 
 ## Projekt?berblick
 Java 21, Maven Wrapper, JUnit 5 und JaCoCo. Der aktuelle Code enthält nur eine Swing-Platzhalter-UI; Fotoverwaltung und Persistenz sind noch nicht implementiert.
-Ziel: lokale Dateisystem-Persistenz mit optionaler, von Nutzer:innen gewählter Cloud-Synchronisierung.
+Ziel: lokale Java-21-Desktopanwendung mit Dateisystem-Persistenz für Windows, macOS und Linux. Cloud-, Web- und Mobile-Funktionen liegen außerhalb des aktuellen Prüfungsumfangs.
 Schichten: `domain` -> (keine Abh?ngigkeit), `application` -> `domain`,
 `infrastructure` -> `application`/`domain`, `ui` -> `application`.
 (Verbindlich erst nach `ARCHITECTURE.md`, Block 3.)
