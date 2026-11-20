@@ -19,7 +19,15 @@
 - **Entscheidung/Stand:** KI liefert einen prüfbaren Entwurf; menschliche fachliche Bewertung,
   Partnerreview und Freigabe stehen aus. Dieser Eintrag behauptet keine Teamentscheidung.
 
-## Noch fehlende historische Einträge
-Der vorhandene Platzhalter nannte Initial-Setup; konkrete Prompts und Entscheidungen dazu
-liegen hier nicht nachweisbar vor. Das Team ergänzt tatsächliche Einsätze aus Block 1/2.
-Nicht mehrere historische KI-Einsätze aus diesem einen Arbeitsauftrag erfinden.
+> Status: Platzhalter ? wird in Block X bef?llt.
+
+## Zweck
+Dokumentation der KI-gest?tzten Arbeit im Projekt.
+
+## Regeln
+- KI-gest?tzte ?nderungen m?ssen kenntlich gemacht werden.
+- Jede PR mit KI-Unterst?tzung erh?lt das Label `ai-assisted`.
+- Die Benutzung von KI ist mit dem Projektkontext und den Teamregeln konsistent zu halten.
+
+## Eintr?ge
+- TODO: Einträge für KI nutzung ergänzen

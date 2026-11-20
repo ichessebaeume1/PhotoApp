@@ -9,7 +9,7 @@ Fokus: nachvollziehbare Spezifikation, Architektur, Tests und kontrollierte Weit
 - **Git**
 - **Java 21 JDK** (z. B. Eclipse Temurin). `JAVA_HOME` gesetzt, `java -version` zeigt 21.
 - **Keine** globale Maven-Installation n?tig (Maven Wrapper ist enthalten).
-- Keine Datenbank, keine Cloud: Daten liegen lokal im Dateisystem.
+- Keine Datenbank. Die Zielarchitektur ist lokal; Cloud, Web und Mobile liegen ausserhalb des Umfangs.
 
 ## Schnellstart
 
@@ -48,9 +48,15 @@ IDE: Projekt als **Maven-Projekt** ?ffnen (IntelliJ: `pom.xml` -> ?Open as Proje
 
 ## Datenhaltung
 
-Alben und Fotos werden lokal im Ordner `data/` gespeichert. Der Ordner ist per
-`.gitignore` ausgeschlossen und wird von der Anwendung bei Bedarf angelegt.
-Das konkrete Dateiformat wird in `ARCHITECTURE.md` dokumentiert (Block 3).
+**Ziel:** Originalfotos und Metadaten werden lokal gespeichert. Das aktuelle Gerüst enthält noch keine Fotoverwaltung oder Persistenz.
+
+## Produktumfang und Implementierungsstand
+
+Die Anforderungen verwenden **Core** für Album und **Memory** für Foto. Das Java-Projekt enthält derzeit nur das Gerüst mit einer Swing-Platzhalteroberfläche. Fotoimport, lokale Speicherung und Papierkorb sind Zielanforderungen, keine vorhandenen Funktionen.
+
+Der aktuelle Prüfungsumfang ist eine lokale Java-21-Anwendung für Windows, macOS und Linux. Cloud-, Web-, iOS- und Android-Zugriff sowie Videos liegen außerhalb der Systemgrenze beziehungsweise im Vision-Backlog. Die CI baut und testet den Maven-Wrapper auf Windows, macOS und Linux.
+
+Einzelheiten, Annahmen und offene Vision-Themen stehen in [REQUIREMENTS.md](REQUIREMENTS.md) und [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Projektstruktur
 
