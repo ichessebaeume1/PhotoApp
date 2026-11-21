@@ -1,0 +1,83 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam ArrowColor #34536B
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #34536B
+title Foto hinzufügen – Erfolg, Duplikat, Limit und technische Fehler
+actor "Nutzer:in" as User
+participant PhotoController as UI
+participant AddPhotoUseCase as UC
+participant AlbumRepository as Repo
+participant Album
+participant PhotoStorage as Storage
+participant ImageFileValidator as Validator
+participant ImageHasher as Hasher
+participant StoredPhoto as Stored
+User -> UI : onAddPhoto(albumId, source)
+UI -> UC : addPhoto(albumId, source)
+note over UC,Repo : Pro Album serialisiert; Repo liefert Arbeitskopie.
+UC -> Repo : findById(albumId)
+Repo --> UC : album
+UC -> Storage : stage(source)
+Storage --> UC : staged (unveränderlicher Snapshot)
+UC -> Validator : validate(staged, policy)
+alt ungültiges Format / zu groß / nicht lesbar
+ Validator --> UC : ValidationError
+ UC -> Storage : discardStage(staged)
+ UC --> UI : ValidationError
+ UI -> UI : showError(message)
+else gültige Datei
+ Validator --> UC : gültig
+ UC -> Hasher : sha256(staged)
+ Hasher --> UC : hash
+ UC -> Album : checkCanAdd(hash)
+ alt Duplikat oder 10.000 bereits erreicht
+  Album --> UC : DuplicatePhoto / AlbumFull
+  UC -> Storage : discardStage(staged)
+  UC --> UI : fachlicher Fehler
+  UI -> UI : showError(message)
+ else zulässig
+  Album --> UC : zulässig
+  UC -> Storage : store(staged)
+  alt Kopieren fehlgeschlagen
+   Storage --> UC : StorageError (keine committed Datei)
+   UC -> Storage : discardStage(staged)
+   UC --> UI : StorageError
+   UI -> UI : showError(message)
+  else Datei abgelegt
+   Storage --> UC : stored
+   UC -> Stored : toPhoto(hash)
+   Stored --> UC : photo
+   UC -> Album : addPhoto(photo)
+   UC -> Repo : save(album)
+   alt JSON atomar gespeichert
+    Repo --> UC : gespeichert
+    UC -> Storage : discardStage(staged)
+    UC --> UI : photo
+    UI -> UI : showPhoto(photo)
+   else Speichern fehlgeschlagen
+    Repo --> UC : PersistenceError
+    UC -> Storage : removeStored(stored)
+    note right of Storage
+Bei Bereinigungsfehler bleibt
+nur eine verwaiste Datei.
+Recovery gemäß ADR-003.
+end note
+    UC -> Storage : discardStage(staged)
+    UC --> UI : PersistenceError
+    UI -> UI : showError(message)
+   end
+  end
+ end
+end
+note over UC,Hasher
+Frühe Fehler (findById, stage, sha256) folgen demselben Fehlerausgang:
+keine Albumänderung, vorhandenes Staging idempotent freigeben, showError.
+Rückgabepfeile sind keine zusätzlichen Methoden.
+end note
+@enduml

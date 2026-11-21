@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam ArrowColor #34536B
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #34536B
+title PhotoApp – Schichten und Abhängigkeiten (Zielentwurf)
+left to right direction
+rectangle "UI\nSwing / später Web" as ui
+rectangle "Anwendung\nUse Cases + Ports" as app
+rectangle "Domäne\nAlbum, Photo, ImportPolicy" as dom
+rectangle "Infrastruktur\nDatei-, JSON-, Hash-, KI-Adapter" as infra
+ui --> app : ruft Anwendungsfälle auf
+app --> dom : schützt Regeln
+infra --> app : implementiert Ports
+infra --> dom : mappt Entitäten
+note bottom of app
+Pfeile = Quellcode-Abhängigkeiten.
+Laufzeitaufrufe über Ports können
+zur Infrastruktur gehen.
+end note
+note bottom of ui
+Keine Geschäftsregeln in der UI.
+Verdrahtung separat im Startcode.
+end note
+@enduml

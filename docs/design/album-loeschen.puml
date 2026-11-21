@@ -1,0 +1,71 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam ArrowColor #34536B
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #34536B
+title Album löschen – zuerst Status, dann sicherer Papierkorb
+actor "Nutzer:in" as User
+participant PhotoController as UI
+participant DeleteAlbumUseCase as UC
+participant AlbumRepository as Repo
+participant Album
+participant PhotoStorage as Storage
+User -> UI : onRequestDeletion(albumId)
+UI -> UC : requestDeletion(albumId)
+UC -> Repo : findById(albumId)
+Repo --> UC : album
+UC -> Album : photoCount()
+Album --> UC : anzahl
+UC --> UI : AlbumSummary(id, name, anzahl, version)
+UI -> UI : showDeletionPreview(summary)
+alt Nutzer:in bestätigt
+ User -> UI : onConfirmDeletion(albumId, expectedVersion)
+ UI -> UC : confirmDeletion(albumId, expectedVersion)
+ UC -> Repo : findById(albumId)
+ Repo --> UC : aktuelle Arbeitskopie
+ note over UC,Repo
+Unter Albumsperre Version prüfen.
+Bei Konflikt: showError und neue Vorschau, keine Änderung.
+end note
+ UC -> Album : markAsDeleted(at)
+ UC -> Repo : save(album)
+ alt Status speichern fehlgeschlagen
+  Repo --> UC : PersistenceError
+  UC --> UI : PersistenceError
+  UI -> UI : showError(message)
+ else Status dauerhaft gespeichert
+  Repo --> UC : gespeichert
+  UC -> Storage : moveToTrash(albumId)
+  note right of Storage
+   Kopieren und prüfen, Trash-Commit,
+   erst danach Originale bereinigen.
+   Vor Commit bleiben alle Originale.
+  end note
+  alt Trash-Commit erfolgreich
+   Storage --> UC : committed (Bereinigung ggf. offen)
+   UC --> UI : erfolgreich
+   UI -> UI : showDeletionSuccess()
+  else Fehler vor Trash-Commit
+   Storage --> UC : StorageError (Originale vollständig)
+   UC -> Album : restore()
+   UC -> Repo : save(album)
+   alt Rücksetzen gespeichert
+    Repo --> UC : aktiv gespeichert
+    UC --> UI : Löschfehler, Album bleibt aktiv
+   else Rücksetzen fehlgeschlagen
+    Repo --> UC : PersistenceError
+    UC --> UI : Recovery nötig, Dateien erhalten
+   end
+   UI -> UI : showError(message)
+  end
+ end
+else Nutzer:in bricht ab
+ User -> UI : onCancelDeletion()
+ UI -> UI : showUnchangedAlbum()
+end
+@enduml
