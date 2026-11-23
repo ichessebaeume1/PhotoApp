@@ -21,8 +21,10 @@ cd PhotoApp
 Der JaCoCo-Bericht liegt unter `target/site/jacoco/index.html`. In der IDE lässt sich die `pom.xml` als Maven-Projekt mit Java 21 öffnen.
 
 ## Implementierungsstand
+vom 23.11.2026 - Bei neuem Implementierungsstand auch bitte entsprechend ändern.
 
 Beim Start öffnet sich die Swing-Platzhalteroberfläche. In Umgebungen ohne grafische Oberfläche gibt die Anwendung eine Meldung aus. Die Klassen `Album` und `Photo` bilden erste Domänenregeln ab, darunter Albumname, Mengenlimit und Duplikate innerhalb eines Albums. Fotoimport, lokale Speicherung und Papierkorb sind Zielanforderungen.
+
 
 Der Prüfungsumfang umfasst Windows, macOS und Linux. Auf diesen Plattformen führt die CI den Maven-Build mit Java 21 aus. Cloud, Web, Mobile und Videos liegen außerhalb des aktuellen Prüfungsumfangs.
 
