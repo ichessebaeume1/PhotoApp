@@ -1,4 +1,6 @@
-# Änderungsanträge
+# Change Request
+
+> Status: Platzhalter ? wird in Block 6 befüllt.
 
 Ein Änderungsantrag hält fest, welche bestehende Anforderung geändert werden soll, warum die Änderung nötig ist und welche Folgen sie für den Prüfungsumfang hat. Den gesichteten Stand der Anforderungen und bereits dokumentierte Entscheidungen beschreibt [REQUIREMENTS.md](REQUIREMENTS.md). Offene Fachfragen sind dort im Abschnitt „Offene Entscheidungen und Review“ erfasst.
 
