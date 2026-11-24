@@ -24,8 +24,13 @@ entscheiden bei Startbereinigung, nicht das Alter der Datei allein.
 
 ### Album löschen
 `requestDeletion` liefert Summary inklusive Version und Anzahl, schreibt nichts.
-`confirmDeletion` prüft dieselbe Version unter Sperre, erzeugt eine Arbeitskopie,
-setzt deletedAt und speichert **zuerst** den Löschstatus; bei Speicherfehler keine Dateibewegung.
+`confirmDeletion` lädt unter Sperre eine Arbeitskopie und ruft
+`Album.markAsDeleted(at, expectedVersion)` auf. Album ist der einzige Besitzer der
+fachlichen Versionsprüfung: bei abweichender Version wirft es `VersionConflict`, ohne
+den Zustand zu verändern. Bei passender Version setzt Album `deletedAt` und erhöht die
+Version. Erst danach wird der Löschstatus gespeichert; bei Speicherfehler keine Dateibewegung.
+`AlbumRepository.save(album)` führt den atomaren JSON-Austausch aus, entscheidet aber nicht,
+ob die Bestätigungsversion fachlich gültig ist.
 `moveToTrash` ist eine logische Verschiebung mit folgendem Vertrag:
 - Vor Beginn Journal mit Operation-ID und Albumversion dauerhaft schreiben.
 - Alle Dateien in ein separates Trash-Verzeichnis **kopieren**, Integrität prüfen;
@@ -35,7 +40,8 @@ setzt deletedAt und speichert **zuerst** den Löschstatus; bei Speicherfehler ke
 - Fehler vor Commit: Originale vollständig; StorageError auslösen. Use Case setzt Status
   in Arbeitskopie zurück und speichert ihn. Auch bei Teilkopien bleiben alle Originale vorhanden.
 - Fehler nach Commit: keine fehlgeschlagene Bewegung melden und keinen Status-Rollback
-  versuchen; Trash ist vollständig, nur Bereinigung offen.
+  versuchen; Trash ist vollständig, nur Bereinigung offen. Erfolg liefert
+  `TrashResult(cleanupPending)`, damit die Rückgabe des Ports den Bereinigungsstatus ausdrückt.
 - Rollback-Speichern scheitert: Album bleibt gelöscht markiert, Originale vollständig,
   Recovery erforderlich. UI meldet „Löschen nicht abgeschlossen. Dateien bleiben erhalten.
   Bitte starte die App neu.“ Kein Erfolg und keine automatische Endlöschung.

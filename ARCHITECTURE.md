@@ -23,14 +23,16 @@ Composition Root außerhalb der fachlichen UI. Siehe [ADR-001](docs/adr/ADR-001-
 | DeleteAlbumUseCase | Vorschau, Bestätigung, zuerst Löschstatus speichern, dann Papierkorb |
 | AlbumRepository | `findById`, `findAll`, `save`; `AlbumSummary` für Übersicht, keine Bilddaten |
 | PhotoStorage | unveränderlicher Import-Snapshot, Ablage, seitenweise Vorschaubilder, sicherer Papierkorb |
-| ImageFileValidator | **Port** für technische Dateiprüfung; FileImageFileValidator liest Dateien |
+| ImageFactsInspector | **Port** für technische Fakten aus einem Snapshot; FileImageFactsInspector ermittelt Größe und erkanntes Format |
 | ImageHasher | SHA-256 des validierten Snapshots; Adapter Sha256ImageHasher |
 | PhotoController | UI-Aufrufe und Darstellung, kurze Fehlermeldungen; keine Geschäftsregeln |
 
 Album prüft die 10.000-Grenze und Hash-Eindeutigkeit selbst in `checkCanAdd`/`addPhoto`.
 Album prüft den Namen im Konstruktor und in `rename`. Die geplante Metadatenbearbeitung
-berücksichtigt die Textgrenzen aus GR-05. Die ImportPolicy legt Größenlimit und erlaubte
-Formate fest. Der Validator prüft den tatsächlichen Dateiinhalt. [CRC-Karten](docs/design/CRC.md)
+berücksichtigt die Textgrenzen aus GR-05. `ImageFactsInspector` meldet technische Fakten
+(Größe und erkanntes Format); `ImportPolicy.check(facts)` entscheidet als Domänenregel über
+Größenlimit und erlaubte Formate und meldet eine Ablehnung als `ValidationError`.
+[CRC-Karten](docs/design/CRC.md)
 und [Schnittstellen](docs/design/SCHNITTSTELLEN.md) konkretisieren die Verantwortlichkeiten.
 
 ![Klassen](docs/design/klassen.png)
@@ -46,7 +48,10 @@ Mehrfachimport ruft diesen Ablauf einzeln auf; bereits erfolgreiche Fotos bleibe
 serialisiert Änderungen je Album einschließlich Hash-/Limitprüfung.
 
 [Album löschen](docs/design/album-loeschen.png): Vorschau enthält Fotoanzahl und Version;
-Bestätigung gilt nur für diese Version. Zuerst `deletedAt` speichern, dann `moveToTrash`.
+`Album.markAsDeleted(at, expectedVersion)` ist alleiniger Besitzer der fachlichen
+Versionsprüfung und wirft bei veralteter Bestätigung `VersionConflict`, ohne den Zustand zu
+ändern. Bei Erfolg steigt die Version; dann wird `deletedAt` gespeichert und `moveToTrash`
+aufgerufen. Der Adapter liefert `TrashResult(cleanupPending)` nach erfolgreichem Commit.
 Dieser Port kopiert zunächst vollständig und prüft die Kopien, bevor aktive Dateien entfernt
 werden. Scheitert er vor dem Commit, bleiben Originale vollständig und der Status wird
 zurückgesetzt. Scheitert auch das Zurücksetzen, bleibt das Album als gelöscht markiert;
