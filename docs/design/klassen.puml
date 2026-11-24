@@ -20,11 +20,15 @@ class Album {
  - photosByHash : Map
  + Album(id, name)
  + rename(name)
+ + id() : UUID
+ + name() : String
+ + version() : long
  + checkCanAdd(hash)
  + addPhoto(photo)
  + removePhoto(photoId)
+ + editPhotoMetadata(photoId, title, description)
  + sort(order)
- + markAsDeleted(at)
+ + markAsDeleted(at, expectedVersion)
  + restore()
  + photoCount() : int
 }
@@ -35,18 +39,25 @@ class Photo {
  - capturedAt : Instant
  - title : String
  - description : String
- + Photo(id, hash, storageRef, capturedAt)
+ + Photo(id, hash, storageRef, capturedAt, title)
+ + title() : String
  + editMetadata(title, description)
+ + validateAndNormalizeTitle(title) : String
 }
 class ImportPolicy {
  + maxFileBytes : long
  + allowedFormats : Set
+ + check(facts)
+}
+class ImageFacts <<DTO>> {
+ + sizeBytes : long
+ + detectedFormat : String
 }
 Album "1" *-- "0..10000" Photo
 }
 package "application" {
 class AddPhotoUseCase {
- + addPhoto(albumId, source) : Photo
+ + addPhoto(albumId, source, title) : PhotoView
 }
 class DeleteAlbumUseCase {
  + requestDeletion(albumId) : AlbumSummary
@@ -64,8 +75,17 @@ class StagedImage <<DTO>> {
 class StoredPhoto <<DTO>> {
  + id : UUID
  + storageRef : String
+ + previewRef : String
  + capturedAt : Instant
- + toPhoto(hash) : Photo
+ + toPhoto(hash, title) : Photo
+}
+class PhotoView <<DTO>> {
+ + id : UUID
+ + title : String
+ + previewRef : String
+}
+class TrashResult <<DTO>> {
+ + cleanupPending : boolean
 }
 interface AlbumRepository <<port>> {
  + findById(albumId) : Album
@@ -77,11 +97,11 @@ interface PhotoStorage <<port>> {
  + store(staged) : StoredPhoto
  + discardStage(staged)
  + removeStored(stored)
- + moveToTrash(albumId)
+ + moveToTrash(albumId) : TrashResult
  + loadPage(albumId, offset, limit) : PhotoPage
 }
-interface ImageFileValidator <<port>> {
- + validate(staged, policy)
+interface ImageFactsInspector <<port>> {
+ + inspect(staged) : ImageFacts
 }
 interface ImageHasher <<port>> {
  + sha256(staged) : String
@@ -92,36 +112,40 @@ interface DescriptionSuggester <<port, Won't>> {
 AddPhotoUseCase --> Album
 AddPhotoUseCase --> AlbumRepository
 AddPhotoUseCase --> PhotoStorage
-AddPhotoUseCase --> ImageFileValidator
+AddPhotoUseCase --> ImageFactsInspector
 AddPhotoUseCase --> ImageHasher
 AddPhotoUseCase --> ImportPolicy
+AddPhotoUseCase --> Photo
 DeleteAlbumUseCase --> AlbumRepository
 DeleteAlbumUseCase --> PhotoStorage
 DeleteAlbumUseCase --> Album
 AlbumRepository ..> AlbumSummary
 PhotoStorage ..> StagedImage
 PhotoStorage ..> StoredPhoto
+PhotoStorage ..> TrashResult
 StoredPhoto ..> Photo
+AddPhotoUseCase ..> PhotoView
+ImageFactsInspector ..> ImageFacts
 }
 package "infrastructure" {
 class FileAlbumRepository
 class LocalPhotoStorage
-class FileImageFileValidator
+class FileImageFactsInspector
 class Sha256ImageHasher
 class LlmDescriptionSuggester <<Won't>>
 FileAlbumRepository ..|> AlbumRepository
 LocalPhotoStorage ..|> PhotoStorage
-FileImageFileValidator ..|> ImageFileValidator
+FileImageFactsInspector ..|> ImageFactsInspector
 Sha256ImageHasher ..|> ImageHasher
 LlmDescriptionSuggester ..|> DescriptionSuggester
 }
 package "ui" {
 class PhotoController {
- + onAddPhoto(albumId, source)
+ + onAddPhoto(albumId, source, title)
  + onRequestDeletion(albumId)
  + onConfirmDeletion(albumId, expectedVersion)
  + onCancelDeletion()
- + showPhoto(photo)
+ + showPhoto(photoView)
  + showError(message)
  + showDeletionPreview(summary)
  + showDeletionSuccess()
@@ -129,17 +153,33 @@ class PhotoController {
 }
 PhotoController --> AddPhotoUseCase
 PhotoController --> DeleteAlbumUseCase
+PhotoController ..> PhotoView
 }
 note bottom of Album
 Regeln: Name 1–50, nicht nur Leerzeichen;
 maximal 10.000 Fotos, Hash je Album eindeutig.
+Jede erfolgreiche Zustandsänderung erhöht die Albumversion monoton:
+add/remove, rename, editMetadata, sort, markAsDeleted und restore.
+Album enthält Photos oder koordiniert ihre Änderungen; damit bleibt die
+Version eindeutig. markAsDeleted prüft expectedVersion und wirft
+VersionConflict bei veralteter Bestätigung. confirmDeletion hält die
+Albumsperre vom Laden bis zum atomaren Speichern.
 AlbumSummary ist ein neutrales DTO in application;
-der Use Case liest photoCount() und mappt das DTO.
-Titel-/Beschreibungslängen bleiben offen.
+der Use Case liest id(), name(), photoCount() und version().
+Fototitel 1–100 Zeichen nach TRIM + NFC + Unicode-Codepoints;
+Fotobeschreibung 500 Zeichen bleiben offen.
+end note
+note bottom of ImportPolicy
+check(ImageFacts) entscheidet fachlich über Größenlimit
+und erlaubte Formate; bei Ablehnung ValidationError.
+ImageFactsInspector liefert nur technische Fakten.
+end note
+note bottom of PhotoView
+UI erhält nur Anwendungsdaten, kein Photo-Domänenobjekt.
 end note
 note bottom of PhotoStorage
 moveToTrash: kopieren, prüfen, Trash committen,
-erst danach Originale bereinigen (ADR-003).
+erst danach Originale bereinigen; Rückgabe TrashResult.
 limit in loadPage: höchstens 100 Vorschauen.
 end note
 @enduml
