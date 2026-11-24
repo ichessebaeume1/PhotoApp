@@ -1,4 +1,7 @@
 # KI-Nutzung
+
+Dieses Protokoll hält fest, wie KI bei der Projektarbeit eingesetzt wurde und welche Vorschläge übernommen, verändert oder verworfen wurden. KI-unterstützte Pull Requests erhalten das Label `ai-assisted`.
+
 ## Block 3 – Architekturentwurf und Konsistenzprüfung
 - **Aufgabe/Ziel:** Block-3-Artefakte anhand Anforderungen, Anleitung, Feedback und bestehendem
   Projektgerüst erstellen; 10.000 Fotos pro Album berücksichtigen.
@@ -19,15 +22,19 @@
 - **Entscheidung/Stand:** KI liefert einen prüfbaren Entwurf; menschliche fachliche Bewertung,
   Partnerreview und Freigabe stehen aus. Dieser Eintrag behauptet keine Teamentscheidung.
 
-> Status: Platzhalter ? wird in Block X bef?llt.
+## Issue #4 – Projektdokumentation
 
-## Zweck
-Dokumentation der KI-gest?tzten Arbeit im Projekt.
+- **Aufgabe/Ziel** Abgleich der Markdown-Dateien mit dem Code, den Anforderungen und der Build-Konfiguration.
+- **Werkzeug** Codex.
+- **Ergebnis** Dokumentationskorrekturen, Risikoübersicht und Vorlagen für Änderungsanträge und KI-Einträge.
+- **Bewertung** Belegte Projektentscheidungen und Annahmen aus den Anforderungen übernommen. Für das Vorgehensmodell fehlt im Checkout eine belastbare Quelle. Der bisher leere Abschnitt wurde entfernt.
+- **Reviewstand** Teamreview ausstehend.
 
-## Regeln
-- KI-gest?tzte ?nderungen m?ssen kenntlich gemacht werden.
-- Jede PR mit KI-Unterst?tzung erh?lt das Label `ai-assisted`.
-- Die Benutzung von KI ist mit dem Projektkontext und den Teamregeln konsistent zu halten.
+## Vorlage für künftige Einträge
 
-## Eintr?ge
-- TODO: Einträge für KI nutzung ergänzen
+- **Issue oder PR** …
+- **Aufgabe/Ziel** …
+- **Werkzeug und Modell, soweit bekannt** …
+- **Ergebnis und betroffene Dateien** …
+- **Übernommene oder verworfene Vorschläge mit Begründung** …
+- **Überprüfung und Reviewstand** …

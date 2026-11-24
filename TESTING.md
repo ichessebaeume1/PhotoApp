@@ -2,7 +2,18 @@
 
 ## Ziel
 
-Das Projekt prüft das Java-21-Maven-Gerüst sowie die fachlichen Abnahmeszenarien Core-Erstellung, Fotoimport und Wiederherstellung. Bis diese Szenarien implementiert sind, sind Smoke- und Platzhaltertests kein Nachweis der Abnahme.
+Die CI führt den Build und die vorhandenen Domänentests aus. Die unten beschriebenen fachlichen Abnahmetests sind mit den zugehörigen Funktionen umzusetzen.
+
+## Vorhandene Domänentests
+
+[AlbumTest](src/test/java/de/dhbw/photoalbum/domain/AlbumTest.java) prüft vier Fälle:
+
+- Eine ungültige Umbenennung lässt den Albumnamen unverändert.
+- Identischer Inhalt wird im selben Album abgelehnt und ist in einem anderen Album zulässig.
+- Das Album akzeptiert 10.000 Fotos. Das nächste Foto wird abgelehnt und der Inhalt bleibt unverändert.
+- Eine wiederverwendete Foto-ID wird abgelehnt und der Albuminhalt bleibt unverändert.
+
+JaCoCo erstellt seinen Bericht unter `target/site/jacoco/index.html`.
 
 ## Abnahmeszenarien
 
@@ -20,7 +31,7 @@ Die GitHub-Actions-Matrix führt Maven-Wrapper, Java 21 und `clean verify` auf `
 
 ## Performance
 
-Für NFA-01 liegen vor der Messung 100 lokale Bilddateien und 100 bereits erzeugte lokale Vorschaudateien auf dem Datenträger. Gemessen wird ausschließlich die Zeit vom Öffnen des Cores bis zur Anzeige des 100. Vorschaubilds. Vorschauerzeugung ist nicht Teil der Messung.
+NFA-01 verlangt höchstens zwei Sekunden auf dem Linux-CI-Runner mit Java 21. Für die Messung liegen vor der Messung 100 lokale Bilddateien und 100 bereits erzeugte lokale Vorschaudateien auf dem Datenträger. Gemessen wird ausschließlich die Zeit vom Öffnen des Cores bis zur Anzeige des 100. Vorschaubilds. Vorschauerzeugung ist nicht Teil der Messung.
 
 ## Löschfrist
 

@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Changed
+- Projektdokumentation mit Implementierungsstand und Anforderungen abgeglichen. Vorlagen für Änderungsanträge und KI-Nutzung sowie eine Risikoübersicht ergänzt. (#4)
 - Block-2-Anforderungen übernommen und als Soll-Verhalten von der aktuellen Implementierung abgegrenzt.
 - Architektur und README weisen Cloud-, Medien- und Plattformanforderungen sowie offene Entscheidungen aus.
 - Reviewer-Feedback eingearbeitet: lokale Java-21-Systemgrenze, messbare NFA, getrennte Entscheidungen/Annahmen, Dateiformate und KI-/Sicherheitsabschnitt.
@@ -12,10 +13,7 @@
 ## [0.1.0-SNAPSHOT] - 2026-11-04
 
 ### Added
-- Initiales Projektger?st mit Maven-Wrapper, Java 21, Swing-Platzhalter und CI-Konfiguration.
-
-### Changed
-- TODO: sp?tere fachliche ?nderungen dokumentieren.
+- Initiales Projektgerüst mit Maven-Wrapper, Java 21, Swing-Platzhalter und CI-Konfiguration.
 
 ## Block-3-Entwurf
 

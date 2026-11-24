@@ -1,11 +1,11 @@
 # Architektur und Entwurf – Block 3
-Status: Entwurf für Teamreview · Grundlage: hochgeladene Anforderungen und Projektbeschreibung §8.
+Status: Entwurf für Teamreview · Grundlage: [Anforderungen](REQUIREMENTS.md) und Projektbeschreibung §8.
 Die Diagramme beschreiben den Zielentwurf; der Java-Code ist erst das Block-3-Gerüst.
 
 ## 1. Rahmen und Schichten
 Verbindlich aus euren Angaben: **10.000 Fotos pro Album**, 50 MB je Datei, Albumname 1–50
 Zeichen und nicht nur Leerzeichen, SHA-256-Duplikatprüfung innerhalb eines Albums.
-Formate sowie maximale Titel-/Beschreibungslänge sind offen; keine erfundenen Grenzwerte.
+JPG, JPEG, PNG und SVG sind als Teamannahme festgehalten (A-09). Textgrenzen stehen in GR-04 und GR-05.
 
 `ui → application → domain`; `infrastructure → application/domain`.
 Die Domäne kennt weder Swing noch Dateipfade oder JSON. Anwendungsfälle koordinieren Ports;
@@ -28,11 +28,9 @@ Composition Root außerhalb der fachlichen UI. Siehe [ADR-001](docs/adr/ADR-001-
 | PhotoController | UI-Aufrufe und Darstellung, kurze Fehlermeldungen; keine Geschäftsregeln |
 
 Album prüft die 10.000-Grenze und Hash-Eindeutigkeit selbst in `checkCanAdd`/`addPhoto`.
-Album prüft den Namen in Konstruktor/`rename`. Photo verwaltet Titel/Beschreibung über
-`editMetadata`; ungeklärte Längengrenzen werden nach Auftraggeberentscheidung dort ergänzt.
-50 MB und erlaubte Formate sind eine fachliche ImportPolicy; der Validator setzt diese
-anhand tatsächlicher Dateiinhalte um. Erlaubte Formate werden vor dem produktiven Import
-festgelegt. Dateiendungen allein reichen nicht. [CRC-Karten](docs/design/CRC.md)
+Album prüft den Namen im Konstruktor und in `rename`. Die geplante Metadatenbearbeitung
+berücksichtigt die Textgrenzen aus GR-05. Die ImportPolicy legt Größenlimit und erlaubte
+Formate fest. Der Validator prüft den tatsächlichen Dateiinhalt. [CRC-Karten](docs/design/CRC.md)
 und [Schnittstellen](docs/design/SCHNITTSTELLEN.md) konkretisieren die Verantwortlichkeiten.
 
 ![Klassen](docs/design/klassen.png)
@@ -57,13 +55,14 @@ Details zu Absturz, Teilfehler und endgültigem Löschen: [ADR-003](docs/adr/ADR
 Speicherformat und Pfade: [ADR-002](docs/adr/ADR-002-json.md).
 
 ## 4. Große Alben und Plattformen
-Metadaten enthalten Hashes und Referenzen, keine Bildbytes. `PhotoStorage.loadPage` lädt
-höchstens 100 kleine Vorschauen; UI hält einen begrenzten Vorschaupuffer statt 10.000 Originalen.
-Echte Leistungsmessung folgt in Block 5; eine maximale Ladezeit ist nicht vereinbart.
-Sortieren (Datum, alphabetisch, manuell) bleibt bei Album; Seiten werden in dieser Reihenfolge
-abgerufen. Swing ist die vorhandene Geräte-UI. Web-App und gemeinsames Teilen sind durch
-NFA-04/FA-09 gefordert, aber durch lokale Dateispeicherung und Swing noch nicht erfüllt:
-Backend, Identitäten und Freigaben bleiben offen, nicht stillschweigend gestrichen.
+Metadaten enthalten Hashes und Referenzen. Beim Öffnen eines Cores werden bis zu 100
+Vorschauen vorgeladen, danach folgen Blöcke zu 50 in der jeweiligen Sortierreihenfolge
+(GR-11, A-05). Die UI hält dafür einen begrenzten Vorschaupuffer. NFA-01 verlangt die
+Anzeige der ersten 100 bereits gespeicherten Vorschaubilder binnen zwei Sekunden unter den
+Bedingungen aus A-06. Die Messung steht aus.
+
+Der Prüfungsumfang umfasst die lokale Desktop-Anwendung für Windows, macOS und Linux.
+Web, Cloud, Mobile und gemeinsames Teilen liegen im Vision-Backlog.
 
 ## 5. Optionale KI-Komponente – Won’t implement
 `DescriptionSuggester` (Anwendungsport) und `LlmDescriptionSuggester` (Infrastrukturadapter)
@@ -74,10 +73,7 @@ Der Agent „Fotos aufräumen“ hat maximal vier Tools mit Freigabeprüfung im 
 nicht nur im Prompt: [KI-Entwurf/Tool-Liste](docs/design/KI.md), [ADR-004](docs/adr/ADR-004-ki.md).
 
 ## 6. Stand und offene Entscheidungen
-Java 21, Maven Wrapper, JUnit 5 und Swing bleiben erhalten. Ports/Use Cases sind Zielentwurf;
-keine fertige Fotoverwaltung behauptet. Formatliste, Titel-/Beschreibungslängen, Definition
-von MB (dezimal/binär), Sortierdatum, Aufbewahrungsdauer/Wiederherstellen und Web/Sharing
-müssen geklärt werden. Die Angabe 10.000 ist vom Team bestätigt und bleibt unverändert.
-Review und Merge/Tag sind erst nach echtem Teamreview abzuschließen; [Abgabestatus](docs/BLOCK3_STATUS.md).
-
-[PDF-Lesefassung](docs/Block3_Lesefassung.pdf) · [Prüfprotokoll](docs/PRUEFPROTOKOLL.md)
+Implementiert sind die Swing-Platzhalteroberfläche sowie `Album` und `Photo` mit ersten
+Domänenregeln. Use Cases, Ports und Dateisystemadapter sind Zielentwurf. Die noch zu
+bestätigenden Annahmen und offenen Entwurfsfragen stehen unter
+[Offene Entscheidungen](docs/design/OFFENE_ENTSCHEIDUNGEN.md). Das Teamreview steht aus.

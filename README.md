@@ -1,100 +1,47 @@
 # Photo Album
 
-Gruppenprojekt *Software Engineering II.1* (DHBW Heilbronn, WS 2026/27).
-Eine kleine Java-Anwendung zur Erstellung und Verwaltung digitaler Fotoalben.
-Fokus: nachvollziehbare Spezifikation, Architektur, Tests und kontrollierte Weiterentwicklung.
-
-## Voraussetzungen
-
-- **Git**
-- **Java 21 JDK** (z. B. Eclipse Temurin). `JAVA_HOME` gesetzt, `java -version` zeigt 21.
-- **Keine** globale Maven-Installation n?tig (Maven Wrapper ist enthalten).
-- Keine Datenbank. Die Zielarchitektur ist lokal; Cloud, Web und Mobile liegen ausserhalb des Umfangs.
+Gruppenprojekt *Software Engineering II.1* an der DHBW Heilbronn (WS 2026/27). Ziel ist eine lokale Desktop-Anwendung zur Verwaltung digitaler Fotoalben. In den Anforderungen heißt ein Album **Core** und ein Foto **Memory**.
 
 ## Schnellstart
+
+Installiere Git und ein Java-21-JDK. Prüfe die Java-Version mit `java -version` und setze `JAVA_HOME` bei Bedarf auf das JDK-Verzeichnis. Maven ist über den Wrapper verfügbar.
 
 ```bash
 git clone https://github.com/ichessebaeume1/PhotoApp.git
 cd PhotoApp
 ```
 
-| Aktion | macOS / Linux | Windows (cmd/PowerShell) |
+| Aktion | macOS / Linux | Windows (PowerShell) |
 |---|---|---|
 | Bauen | `./mvnw clean compile` | `.\mvnw.cmd clean compile` |
-| Tests + Coverage | `./mvnw clean test` | `.\mvnw.cmd clean test` |
-| Voller Build wie CI | `./mvnw clean verify` | `.\mvnw.cmd clean verify` |
+| Tests und Coverage | `./mvnw clean test` | `.\mvnw.cmd clean test` |
+| Voller Build wie in der CI | `./mvnw clean verify` | `.\mvnw.cmd clean verify` |
 | Anwendung starten | `./mvnw compile exec:java` | `.\mvnw.cmd compile exec:java` |
 
-Erwartet: `BUILD SUCCESS`.
-Coverage-Report: `target/site/jacoco/index.html` im Browser öffnen.
+Der JaCoCo-Bericht liegt unter `target/site/jacoco/index.html`. In der IDE lässt sich die `pom.xml` als Maven-Projekt mit Java 21 öffnen.
 
-Bei Error: 
+## Implementierungsstand
+vom 23.11.2026 - Bei neuem Implementierungsstand auch bitte entsprechend ändern.
 
-`The JAVA_HOME environment variable is not defined correctly,
-this environment variable is needed to run this program.`
+Beim Start öffnet sich die Swing-Platzhalteroberfläche. In Umgebungen ohne grafische Oberfläche gibt die Anwendung eine Meldung aus. Die Klassen `Album` und `Photo` bilden erste Domänenregeln ab, darunter Albumname, Mengenlimit und Duplikate innerhalb eines Albums. Fotoimport, lokale Speicherung und Papierkorb sind Zielanforderungen.
 
-```bash
-$env:JAVA_HOME = "C:\tools\jdk-21.0.7+6"
-$env:Path = "$env:JAVA_HOME\bin;$env:Path"
-.\mvnw.cmd exec:java
-```
 
-Beim Start ?ffnet sich ein Platzhalter-Fenster (Swing). Es gibt keine Funktion, nur das
-Layout. Auf Systemen ohne grafische Oberflöche (z. B. CI, SSH) wird stattdessen eine
-Meldung ausgegeben.
-
-IDE: Projekt als **Maven-Projekt** ?ffnen (IntelliJ: `pom.xml` -> ?Open as Project" /
-?Add as Maven Project"), Projekt-SDK auf Java 21 stellen.
-
-## Datenhaltung
-
-**Ziel:** Originalfotos und Metadaten werden lokal gespeichert. Das aktuelle Gerüst enthält noch keine Fotoverwaltung oder Persistenz.
-
-## Produktumfang und Implementierungsstand
-
-Die Anforderungen verwenden **Core** für Album und **Memory** für Foto. Das Java-Projekt enthält derzeit nur das Gerüst mit einer Swing-Platzhalteroberfläche. Fotoimport, lokale Speicherung und Papierkorb sind Zielanforderungen, keine vorhandenen Funktionen.
-
-Der aktuelle Prüfungsumfang ist eine lokale Java-21-Anwendung für Windows, macOS und Linux. Cloud-, Web-, iOS- und Android-Zugriff sowie Videos liegen außerhalb der Systemgrenze beziehungsweise im Vision-Backlog. Die CI baut und testet den Maven-Wrapper auf Windows, macOS und Linux.
-
-Einzelheiten, Annahmen und offene Vision-Themen stehen in [REQUIREMENTS.md](REQUIREMENTS.md) und [ARCHITECTURE.md](ARCHITECTURE.md).
-
-## Projektstruktur
+Der Prüfungsumfang umfasst Windows, macOS und Linux. Auf diesen Plattformen führt die CI den Maven-Build mit Java 21 aus. Cloud, Web, Mobile und Videos liegen außerhalb des aktuellen Prüfungsumfangs.
 
 | Pfad | Inhalt |
 |---|---|
-| `src/main/java/de/dhbw/photoalbum/domain` | Entit?ten, Gesch?ftsregeln |
-| `.../application` | Use Cases, Services, Ports |
-| `.../infrastructure` | Dateisystem-Anbindung (Port-Implementierungen) |
-| `.../ui` | Swing-Oberflöche, `Main` und `MainWindow` (aktuell Platzhalter) |
-| `src/test/java/...` | Unit- und Integrationstests |
-| `docs/` | ADRs, UML-Diagramme, Refactoring, Pr?sentation, KI-Prompts |
+| `src/main/java/de/dhbw/photoalbum/domain` | Domänenklassen `Album` und `Photo` |
+| `src/main/java/de/dhbw/photoalbum/ui` | Swing-Platzhalter in `Main` |
+| `src/main/java/de/dhbw/photoalbum/application` und `infrastructure` | Paketgerüst für Anwendungsfälle und Dateisystem-Anbindung |
+| `src/test/java` | Domänentests |
+| `docs/` | Architekturentscheidungen, UML-Diagramme und Entwurfsdetails |
 
-Weitere Dokumente: [REQUIREMENTS](REQUIREMENTS.md) ? [ARCHITECTURE](ARCHITECTURE.md) ?
-[TESTING](TESTING.md) ? [CHANGE_REQUEST](CHANGE_REQUEST.md) ? [AI_USAGE](AI_USAGE.md) ?
-[RISK_ANALYSIS](RISK_ANALYSIS.md) ? [AGENTS](AGENTS.md) ? [CHANGELOG](CHANGELOG.md)
+## Projektdokumentation
 
-## Git-Workflow (Team-Regeln)
+- [Anforderungen](REQUIREMENTS.md) und [Architektur mit Stand des Entwurfs](ARCHITECTURE.md#6-stand-und-offene-entscheidungen)
+- [Testkonzept](TESTING.md), [Risikoanalyse](RISK_ANALYSIS.md) und [Änderungsanträge](CHANGE_REQUEST.md)
+- [KI-Nutzung](AI_USAGE.md), [Agentenregeln](AGENTS.md) und [Changelog](CHANGELOG.md)
 
-`main` ist gesch?tzt ? **niemals direkt auf `main` committen.**
+## Git-Workflow
 
-1. Issue anlegen (Requirement oder Bugfix).
-2. Branch von `main`, z. B. `feature/FA-01-album-erstellen`.
-3. Conventional Commits mit Issue-ID, z. B. `feat(#12): implement album creation`.
-   Keine ?fix"- oder ?wip"-Commits auf `main`.
-4. Pull Request gegen `main`.
-5. CI (GitHub Actions, Job `build`) muss gr?n sein.
-6. Mindestens ein anderes Teammitglied reviewt und gibt frei.
-   KI-generierter Code erh?lt das Label `ai-assisted`.
-
-## Vorgehensmodell (Block 1)
-
-
-## Versionen
-
-Java 21 ? Maven 3.9.9 (Wrapper) ? JUnit 5.11.4 ? JaCoCo 0.8.12 ? Swing (JDK)
-
-## Block 3
-
-[Architektur und Diagramme](ARCHITECTURE.md) · [Stand und nächste Schritte](docs/BLOCK3_STATUS.md).
-Der Code enthält weiterhin die Swing-Platzhalter-UI plus erste Domäneninvarianten.
-Use Cases, Dateiadapter und optionale KI sind Zielentwurf für spätere Implementierung.
+Änderungen beginnen mit einem Issue und einem eigenen Branch. Commits folgen Conventional Commits mit Issue-ID, zum Beispiel `docs(#4): update project documentation`. Der Pull Request geht gegen `main` und benötigt eine grüne CI sowie die Freigabe eines anderen Teammitglieds. KI-unterstützte PRs erhalten das Label `ai-assisted` und einen Eintrag im KI-Protokoll.

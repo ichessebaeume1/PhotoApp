@@ -1,9 +1,11 @@
-# Risikobewertung
+# Risikoanalyse
 
-> Status: Platzhalter ? wird in Block X bef?llt.
+> Status: Vorlage. Die konkreten Risiken werden später ergänzt.
 
-## Zweck
-Erfassung von Risiken, Tendenzen und Gegenma?nahmen f?r das Projekt.
+Die Platzhalterzeile für jedes erfasste Risiko kopieren und ausfüllen.
 
-## TODO
-- Risikoanalyse zu Projektbeginn erg?nzen.
+| Risiko | Auswirkung | Gegenmaßnahme | Stand |
+|---|---|---|---|
+| … | … | … | … |
+
+Grundlage für die fachliche Bewertung sind die [Anforderungen](REQUIREMENTS.md).
