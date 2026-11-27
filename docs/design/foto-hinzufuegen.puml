@@ -93,6 +93,7 @@ end note
  end
  end
 end
+ end
 note over UC,Hasher
 Frühe Fehler (findById, stage, sha256) folgen demselben Fehlerausgang:
 keine Albumänderung, vorhandenes Staging idempotent freigeben, showError.
