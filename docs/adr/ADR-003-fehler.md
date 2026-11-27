@@ -20,7 +20,7 @@ Technische Details gehen ins lokale Log, keine privaten Pfade in Nutzermeldungen
 3. Albumregeln prüfen, neue Foto-ID vergeben, geprüften Titel weitergeben und Kopie unter
    dieser ID ablegen.
 4. Arbeitskopie ändern und JSON atomar speichern. Dies ist der fachliche Commit.
-4. Wenn Schritt 3 scheitert: neue Ablage löschen; scheitert das auch, bleibt nur eine verwaiste
+5. Wenn Schritt 4 scheitert: neue Ablage löschen; scheitert das auch, bleibt nur eine verwaiste
 Datei. Das bisher gespeicherte Album bleibt gültig. `discardStage` ist idempotent, scheitert
 nicht nach außen; Staging-Reste werden beim nächsten Start erneut entfernt.
 Keine automatische Löschung erreichbarer Originale. Journal und gespeicherte Referenzen
@@ -28,19 +28,18 @@ entscheiden bei Startbereinigung, nicht das Alter der Datei allein.
 
 ### Album löschen
 `requestDeletion` liefert Summary inklusive Version und Anzahl, schreibt nichts.
-`confirmDeletion` lädt unter Sperre eine Arbeitskopie und ruft
-`Album.markAsDeleted(at, expectedVersion)` auf. Album ist der einzige Besitzer der
-fachlichen Versionsprüfung: bei abweichender Version wirft es `VersionConflict`, ohne
-den Zustand zu verändern. Bei passender Version setzt Album `deletedAt` und erhöht die
-Version. Erst danach wird der Löschstatus gespeichert; bei Speicherfehler keine Dateibewegung.
-`AlbumRepository.save(album)` führt den atomaren JSON-Austausch aus, entscheidet aber nicht,
-ob die Bestätigungsversion fachlich gültig ist.
-Die Albumsperre gilt vom Laden der Arbeitskopie bis zum atomaren Speichern. Album erhöht seine
-Version bei jeder erfolgreichen Zustandsänderung, einschließlich Add/Remove, Rename,
-Fotometadaten, Löschen und Wiederherstellen. Das Zurücksetzen nach einem Storage-Fehler
-ist selbst eine Zustandsänderung und erhöht daher die Version weiterhin monoton.
-`VersionConflict` lässt weder Zustand noch Version ändern; die UI lädt danach eine frische
-Vorschau und verlangt eine neue Bestätigung.
+`confirmDeletion` hält die Albumsperre vom Laden der Arbeitskopie bis zum atomaren Speichern.
+Es ruft `Album.markAsDeleted(at, expectedVersion)` auf. Album ist alleiniger Eigentümer der
+fachlichen Versionsprüfung: Bei `expectedVersion != version()` wirft es `VersionConflict`,
+ohne Zustand oder Version zu ändern. Bei Übereinstimmung setzt es `deletedAt` und erhöht die
+Version monoton. Erst danach wird der Löschstatus gespeichert; bei Speicherfehler keine
+Dateibewegung. `AlbumRepository.save(album)` persistiert atomar, entscheidet aber selbst nicht
+über die Bestätigungsversion. Die UI lädt nach `VersionConflict` eine frische Vorschau und
+verlangt eine neue Bestätigung.
+Album erhöht seine Version bei jeder erfolgreichen Zustandsänderung, einschließlich Hinzufügen
+und Entfernen von Fotos, Umbenennen, enthaltenen Fotometadaten, Löschen und Wiederherstellen.
+Das Zurücksetzen des aktiven Status nach einem Storage-Fehler ist ebenfalls eine Zustandsänderung
+und erhöht die Version weiterhin monoton.
 `moveToTrash` ist eine logische Verschiebung mit folgendem Vertrag:
 - Vor Beginn Journal mit Operation-ID und Albumversion dauerhaft schreiben.
 - Alle Dateien in ein separates Trash-Verzeichnis **kopieren**, Integrität prüfen;
