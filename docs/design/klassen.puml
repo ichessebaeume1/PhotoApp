@@ -177,6 +177,14 @@ end note
 note bottom of PhotoView
 UI erhält nur Anwendungsdaten, kein Photo-Domänenobjekt.
 end note
+note bottom of ImportPolicy
+check(ImageFacts) entscheidet fachlich über Größenlimit
+und erlaubte Formate; bei Ablehnung ValidationError.
+ImageFactsInspector liefert nur technische Fakten.
+end note
+note bottom of PhotoView
+UI erhält nur Anwendungsdaten, kein Photo-Domänenobjekt.
+end note
 note bottom of PhotoStorage
 moveToTrash: kopieren, prüfen, Trash committen,
 erst danach Originale bereinigen; Rückgabe TrashResult.

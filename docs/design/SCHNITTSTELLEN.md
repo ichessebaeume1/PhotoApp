@@ -22,10 +22,9 @@ Die Diagramme sind Zielentwurf; im Code sind nur die Domänengrundlagen umgesetz
 AlbumSummary: id, name, photoCount, version. PhotoView: id, title, previewRef; einziges
 Foto-Ergebnis für die UI. TrashResult: cleanupPending. StagedImage: opaker Token; Infrastruktur löst ihn
 intern auf einen Pfad auf. StoredPhoto: id, storageRef, previewRef, capturedAt;
-toPhoto(hash, title) erzeugt Photo mit dem vom Use Case an die Domäne übergebenen geprüften Titel.
-Die Domäne trimmt den Titel außen, normalisiert ihn nach NFC und verlangt 1–100
-Unicode-Codepoints gemäß GR-05 und A-01. Photo.title() liefert den gespeicherten Titel für
-PhotoView.
+toPhoto(hash, title) erzeugt Photo mit dem vom Use Case geprüften Titel. Die Domäne prüft
+trimmt außen, normalisiert NFC und verlangt 1–100 Unicode-Codepoints. Photo.title() liefert
+den gespeicherten Titel für PhotoView.
 PhotoPage: Liste aus Foto-ID und Vorschaubildreferenz, offset, hasMore; Details in Block 4.
 SourceRef, SuggestionRequest, Suggestion und Fehlerklassen sind im Zielentwurf noch nicht
 vollständig ausmodellierte DTOs. `source` bezeichnet eine neutrale, vom Adapter geprüfte
