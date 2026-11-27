@@ -17,7 +17,7 @@
 
 ## Walkthrough
 1. UI übergibt ausgewähltes Foto und seinen Titel an `AddPhotoUseCase`; dieser prüft den Titel
-   vor dem Staging über die Domäne (trimmen, NFC, 1–100 Unicode-Codepoints), läd danach eine
+   vor dem Staging über die Domäne (trimmen, NFC, 1–100 Unicode-Codepoints), lädt danach eine
    Album-Arbeitskopie.
 2. Bei ungültigem Titel wird die Datei sofort abgelehnt. Sonst erzeugt Storage den Snapshot,
    Inspector ermittelt Größe/Format; ImportPolicy entscheidet,

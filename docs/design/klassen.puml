@@ -87,6 +87,14 @@ class PhotoView <<DTO>> {
 class TrashResult <<DTO>> {
  + cleanupPending : boolean
 }
+class PhotoView <<DTO>> {
+ + id : UUID
+ + title : String
+ + previewRef : String
+}
+class TrashResult <<DTO>> {
+ + cleanupPending : boolean
+}
 interface AlbumRepository <<port>> {
  + findById(albumId) : Album
  + findAll() : List<AlbumSummary>
@@ -168,6 +176,14 @@ AlbumSummary ist ein neutrales DTO in application;
 der Use Case liest id(), name(), photoCount() und version().
 Fototitel 1–100 Zeichen nach TRIM + NFC + Unicode-Codepoints;
 Fotobeschreibung 500 Zeichen bleiben offen.
+end note
+note bottom of ImportPolicy
+check(ImageFacts) entscheidet fachlich über Größenlimit
+und erlaubte Formate; bei Ablehnung ValidationError.
+ImageFactsInspector liefert nur technische Fakten.
+end note
+note bottom of PhotoView
+UI erhält nur Anwendungsdaten, kein Photo-Domänenobjekt.
 end note
 note bottom of ImportPolicy
 check(ImageFacts) entscheidet fachlich über Größenlimit
