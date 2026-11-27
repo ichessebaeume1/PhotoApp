@@ -52,6 +52,14 @@ Dieses Protokoll hält fest, wie KI bei der Projektarbeit eingesetzt wurde und w
 - **Überprüfung und Reviewstand** Maven-Validierung nach Dokument-/Diagrammänderung;
   erneute Teamprüfung steht aus.
 
+## Issue #9 – Repository-Dokumentation für Block 4
+
+- **Aufgabe/Ziel** Anforderungen aus #9 mit Repository, CI und Review-Nachweisen abgleichen.
+- **Werkzeug und Modell** Codex. [Modellkonfigurationen](docs/ai/models.md).
+- **Arbeitsgrundlage** [Arbeitsauftrag](docs/ai/prompts/04-block4-repository.md). Aus der Prüfung entstand der wiederverwendbare [Skill zur Repository-Prüfung](docs/ai/skills/repository-pruefung/SKILL.md).
+- **Ergebnis und Bewertung** Bestehende Schichten und CI beibehalten. Die geprüften GitHub-Reviews und der Ablauf für die Abschluss-Tags stehen in [Reviews und Releases](docs/RELEASES.md).
+- **Reviewstand** Teamreview für diese Änderungen ausstehend.
+
 ## Vorlage für künftige Einträge
 
 - **Issue oder PR** …

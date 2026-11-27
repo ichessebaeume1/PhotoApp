@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- Arbeitsauftrag, Modellkonfigurationen und Skill zur Repository-Prüfung sowie Review-Nachweise und Ablauf für den Block-4-Release dokumentiert. (#9)
+
 ### Changed
 - Architekturreview #17 umgesetzt: ImportPolicy entscheidet über ImageFacts, Album besitzt die
   Versionsprüfung beim Löschen, PhotoView/TrashResult und der Konfliktpfad sind modelliert;

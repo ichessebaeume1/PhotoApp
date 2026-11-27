@@ -24,7 +24,8 @@ Schichten: `domain` -> (keine Abhängigkeit), `application` -> `domain`,
    `test(#14): ...`, `refactor(#20): ...`. Refactoring-Commits ändern kein Verhalten
    und werden getrennt von fachlichen Änderungen committet.
 3. Jeder PR von einem Agenten erhält das Label `ai-assisted` und einen Eintrag in `AI_USAGE.md`.
-4. Kleine, fokussierte Änderungen. Nur umsetzen, was im Issue / in `REQUIREMENTS.md` steht.
+4. Versioniere wiederverwendbare Prompts, projektspezifische Skills und bekannte Modellkonfigurationen unter `docs/ai/`. Verlinke die Arbeitsgrundlagen in `AI_USAGE.md`.
+5. Kleine, fokussierte Änderungen. Nur umsetzen, was im Issue / in `REQUIREMENTS.md` steht.
    Keine zusätzlichen Features.
 
 ## Code-Konventionen

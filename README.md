@@ -44,4 +44,6 @@ Der Prüfungsumfang umfasst Windows, macOS und Linux. Auf diesen Plattformen fü
 
 ## Git-Workflow
 
+[Review-Nachweise und Release-Ablauf](docs/RELEASES.md)
+
 Änderungen beginnen mit einem Issue und einem eigenen Branch. Commits folgen Conventional Commits mit Issue-ID, zum Beispiel `docs(#4): update project documentation`. Der Pull Request geht gegen `main` und benötigt eine grüne CI sowie die Freigabe eines anderen Teammitglieds. KI-unterstützte PRs erhalten das Label `ai-assisted` und einen Eintrag im KI-Protokoll.
