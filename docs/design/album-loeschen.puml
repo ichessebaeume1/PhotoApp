@@ -19,49 +19,66 @@ User -> UI : onRequestDeletion(albumId)
 UI -> UC : requestDeletion(albumId)
 UC -> Repo : findById(albumId)
 Repo --> UC : album
+UC -> Album : id()
+Album --> UC : id
+UC -> Album : name()
+Album --> UC : name
 UC -> Album : photoCount()
 Album --> UC : anzahl
+UC -> Album : version()
+Album --> UC : version
 UC --> UI : AlbumSummary(id, name, anzahl, version)
 UI -> UI : showDeletionPreview(summary)
 alt Nutzer:in bestätigt
  User -> UI : onConfirmDeletion(albumId, expectedVersion)
  UI -> UC : confirmDeletion(albumId, expectedVersion)
+ note over UC,Repo
+ Albumsperre wird vom Laden bis zum atomaren Speichern gehalten.
+ end note
  UC -> Repo : findById(albumId)
  Repo --> UC : aktuelle Arbeitskopie
- note over UC,Repo
-Unter Albumsperre Version prüfen.
-Bei Konflikt: showError und neue Vorschau, keine Änderung.
-end note
- UC -> Album : markAsDeleted(at)
- UC -> Repo : save(album)
- alt Status speichern fehlgeschlagen
-  Repo --> UC : PersistenceError
-  UC --> UI : PersistenceError
+ UC -> Album : markAsDeleted(at, expectedVersion)
+ alt erwartete Version veraltet
+  Album --> UC : VersionConflict
+  UC --> UI : VersionConflict
   UI -> UI : showError(message)
- else Status dauerhaft gespeichert
-  Repo --> UC : gespeichert
-  UC -> Storage : moveToTrash(albumId)
-  note right of Storage
-   Kopieren und prüfen, Trash-Commit,
-   erst danach Originale bereinigen.
-   Vor Commit bleiben alle Originale.
-  end note
-  alt Trash-Commit erfolgreich
-   Storage --> UC : committed (Bereinigung ggf. offen)
+  UI -> UC : requestDeletion(albumId)
+  UC -> Repo : findById(albumId)
+  Repo --> UC : aktuelle Arbeitskopie
+  UC --> UI : aktualisierte AlbumSummary
+  UI -> UI : showDeletionPreview(summary)
+ else Version passt; Album markiert
+  Album --> UC : gelöscht; Version erhöht
+  UC -> Repo : save(album)
+  alt Status speichern fehlgeschlagen
+   Repo --> UC : PersistenceError
+   UC --> UI : PersistenceError
+   UI -> UI : showError(message)
+  else Status dauerhaft gespeichert
+   Repo --> UC : gespeichert
+   UC -> Storage : moveToTrash(albumId)
+   note right of Storage
+    Kopieren und prüfen, Trash-Commit,
+    erst danach Originale bereinigen.
+    Vor Commit bleiben alle Originale.
+   end note
+   alt Trash-Commit erfolgreich
+    Storage --> UC : TrashResult(cleanupPending)
    UC --> UI : erfolgreich
    UI -> UI : showDeletionSuccess()
-  else Fehler vor Trash-Commit
-   Storage --> UC : StorageError (Originale vollständig)
-   UC -> Album : restore()
-   UC -> Repo : save(album)
-   alt Rücksetzen gespeichert
-    Repo --> UC : aktiv gespeichert
-    UC --> UI : Löschfehler, Album bleibt aktiv
-   else Rücksetzen fehlgeschlagen
-    Repo --> UC : PersistenceError
-    UC --> UI : Recovery nötig, Dateien erhalten
+   else Fehler vor Trash-Commit
+    Storage --> UC : StorageError (Originale vollständig)
+    UC -> Album : restore()
+    UC -> Repo : save(album)
+    alt Rücksetzen gespeichert
+     Repo --> UC : aktiv gespeichert
+     UC --> UI : Löschfehler, Album bleibt aktiv
+    else Rücksetzen fehlgeschlagen
+     Repo --> UC : PersistenceError
+     UC --> UI : Recovery nötig, Dateien erhalten
+    end
+    UI -> UI : showError(message)
    end
-   UI -> UI : showError(message)
   end
  end
 else Nutzer:in bricht ab

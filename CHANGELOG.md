@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Changed
+- Architekturreview #17 umgesetzt: ImportPolicy entscheidet über ImageFacts, Album besitzt die
+  Versionsprüfung beim Löschen, PhotoView/TrashResult und der Konfliktpfad sind modelliert;
+  Architekturtexte und Diagrammquellen abgeglichen.
 - Projektdokumentation mit Implementierungsstand und Anforderungen abgeglichen. Vorlagen für Änderungsanträge und KI-Nutzung sowie eine Risikoübersicht ergänzt. (#4)
 - Block-2-Anforderungen übernommen und als Soll-Verhalten von der aktuellen Implementierung abgegrenzt.
 - Architektur und README weisen Cloud-, Medien- und Plattformanforderungen sowie offene Entscheidungen aus.

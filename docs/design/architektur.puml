@@ -12,7 +12,7 @@ title PhotoApp – Schichten und Abhängigkeiten (Zielentwurf)
 left to right direction
 rectangle "UI\nSwing / später Web" as ui
 rectangle "Anwendung\nUse Cases + Ports" as app
-rectangle "Domäne\nAlbum, Photo, ImportPolicy" as dom
+rectangle "Domäne\nAlbum, Photo, ImportPolicy, ImageFacts" as dom
 rectangle "Infrastruktur\nDatei-, JSON-, Hash-, KI-Adapter" as infra
 ui --> app : ruft Anwendungsfälle auf
 app --> dom : schützt Regeln
@@ -26,5 +26,9 @@ end note
 note bottom of ui
 Keine Geschäftsregeln in der UI.
 Verdrahtung separat im Startcode.
+end note
+note bottom of dom
+ImportPolicy entscheidet anhand technischer
+ImageFacts; Dateizugriff bleibt im Adapter.
 end note
 @enduml
